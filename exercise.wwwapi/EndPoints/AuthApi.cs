@@ -1,6 +1,7 @@
 ﻿using exercise.wwwapi.Configuration;
 using exercise.wwwapi.Models;
 using exercise.wwwapi.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +20,9 @@ namespace exercise.wwwapi.EndPoints
             app.MapGet("users", GetUsers);
 
         }
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         private static async Task<IResult> GetUsers(IDatabaseRepository<User> service)
         {
             return Results.Ok(service.GetAll());
@@ -42,7 +45,7 @@ namespace exercise.wwwapi.EndPoints
             service.Insert(user);
             service.Save();
 
-            return Results.Ok(new Payload<UserResponseDto>() { data = new UserResponseDto() { Username = request.Username, PasswordHash = passwordHash } });
+            return Results.Ok(new Payload<string>() { data = "Created Account" });
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -52,7 +55,7 @@ namespace exercise.wwwapi.EndPoints
             //user doesn't exist
             if (!service.GetAll().Where(u => u.Username == request.Username).Any()) return Results.BadRequest(new Payload<UserRequestDto>() { status = "User does not exist", data = request });
 
-            User user = service.GetAll().FirstOrDefault(u => u.Username == request.Username);
+            User user = service.GetAll().FirstOrDefault(u => u.Username == request.Username)!;
            
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
