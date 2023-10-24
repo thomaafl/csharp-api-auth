@@ -1,7 +1,12 @@
-﻿using exercise.wwwapi.Models;
+﻿using exercise.wwwapi.Configuration;
+using exercise.wwwapi.Models;
 using exercise.wwwapi.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace exercise.wwwapi.EndPoints
 {
@@ -42,7 +47,7 @@ namespace exercise.wwwapi.EndPoints
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        private static async Task<IResult> Login(UserRequestDto request, IDatabaseRepository<User> service)
+        private static async Task<IResult> Login(UserRequestDto request, IDatabaseRepository<User> service, IConfig config)
         {
             //user doesn't exist
             if (!service.GetAll().Where(u => u.Username == request.Username).Any()) return Results.BadRequest(new Payload<UserRequestDto>() { status = "User does not exist", data = request });
@@ -54,9 +59,26 @@ namespace exercise.wwwapi.EndPoints
             {
                 return Results.BadRequest(new Payload<UserRequestDto>() { status = "Wrong Password", data = request });
             }
-
-            return Results.Ok(new Payload<UserResponseDto>() { data = new UserResponseDto() { Username = user.Username, PasswordHash = user.PasswordHash } }) ;
+            string token = CreateToken(user, config);
+            return Results.Ok(new Payload<string>() { data =  token }) ;
            
+        }
+        private static string CreateToken(User user, IConfig config)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username)                
+            };
+            
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue("AppSettings:Token")));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: credentials
+                );
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
         }
     }
 }
