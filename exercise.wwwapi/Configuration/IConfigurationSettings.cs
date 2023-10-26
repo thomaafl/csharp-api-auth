@@ -1,6 +1,6 @@
 ﻿namespace exercise.wwwapi.Configuration
 {
-    public interface IConfig
+    public interface IConfigurationSettings
     {
         string GetValue(string key);
     }

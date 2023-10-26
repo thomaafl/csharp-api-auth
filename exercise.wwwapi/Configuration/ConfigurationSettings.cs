@@ -1,9 +1,9 @@
 ﻿namespace exercise.wwwapi.Configuration
 {
-    public class Config : IConfig
+    public class ConfigurationSettings : IConfigurationSettings
     {
         IConfiguration _configuration;
-        public Config()
+        public ConfigurationSettings()
         {
             _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         }

@@ -50,7 +50,7 @@ namespace exercise.wwwapi.EndPoints
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        private static async Task<IResult> Login(UserRequestDto request, IDatabaseRepository<User> service, IConfig config)
+        private static async Task<IResult> Login(UserRequestDto request, IDatabaseRepository<User> service, IConfigurationSettings config)
         {
             //user doesn't exist
             if (!service.GetAll().Where(u => u.Username == request.Username).Any()) return Results.BadRequest(new Payload<UserRequestDto>() { status = "User does not exist", data = request });
@@ -66,7 +66,7 @@ namespace exercise.wwwapi.EndPoints
             return Results.Ok(new Payload<string>() { data =  token }) ;
            
         }
-        private static string CreateToken(User user, IConfig config)
+        private static string CreateToken(User user, IConfigurationSettings config)
         {
             List<Claim> claims = new List<Claim>
             {
