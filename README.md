@@ -1,5 +1,6 @@
-# csharp-api-auth
+# C# Jwt Authentication Repo
 
+A repository to demonstrate how you might add Jwt authentication to a 
 ## Before running
 
 - You need to create a couple of files:
