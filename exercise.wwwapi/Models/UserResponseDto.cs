@@ -1,5 +1,8 @@
-﻿namespace exercise.wwwapi.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace exercise.wwwapi.Models
 {
+    [NotMapped]
     public class UserResponseDto
     {
         public string Username { get; set; }
