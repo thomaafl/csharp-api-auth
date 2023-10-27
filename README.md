@@ -1,9 +1,14 @@
 # C# Jwt Authentication Repo
 
-A repository to demonstrate how you might add Jwt authentication to a 
+A repository to demonstrate how you might add Jwt authentication to a Webapi
+
 ## Before running
 
-- You need to create a couple of files:
+- You need to examine the DatabaseContext.cs class and choose your database.  For convenience the 
+  project has the EntityFramework InMemoryDatabase configured or you could choose the PostGres option  
+  ensuring you update your credentials in the appsettings.json / appsettings.Development.json.
+- 
+## Creating the config files
 ```
 touch appsettings.json
 touch appsettings.Development.json
@@ -28,16 +33,17 @@ touch appsettings.Development.json
 
 ```
 
-# Migration
+# Migration (don't need this for the InMemoryDatabase option)
 Now you can run a migration to create the User table:
 ```
 add-migration FirstMigration
 update-database
 ```
 
+
 ## Packages
 
-The following packages have been installed: 
+The following versions of packages have been installed: 
 
 bcrypt.net-core -version 4.0.3
 Microsoft.AspNetCore.Authentication.Jwtbearer   -version 7.0.13
