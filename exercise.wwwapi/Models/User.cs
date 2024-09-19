@@ -2,6 +2,8 @@
 
 namespace exercise.wwwapi.Models
 {
+
+    public enum Role { User, Admin }
     [Table("users")]
     public class User
     {
@@ -11,5 +13,7 @@ namespace exercise.wwwapi.Models
         public string Username { get; set; }
         [Column("passwordhash")]
         public string PasswordHash { get; set; }    
+
+        public Role Role { get; set; }
     }
 }
